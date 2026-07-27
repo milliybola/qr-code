@@ -12,11 +12,11 @@ export function ProductGridSkeleton() {
       {[0, 1].map((section) => (
         <div key={section}>
           <div className="skeleton mb-4 h-6 w-40 rounded-full" />
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3">
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
             {[0, 1, 2, 3].map((i) => (
-              <div key={i} className="flex gap-3 rounded-2xl bg-white p-3 shadow-sm sm:flex-col">
-                <div className="skeleton aspect-square w-24 rounded-xl sm:w-full" />
-                <div className="flex-1 space-y-2 sm:mt-3">
+              <div key={i} className="overflow-hidden rounded-2xl bg-white shadow-sm">
+                <div className="skeleton aspect-square w-full" />
+                <div className="space-y-2 p-2.5 sm:p-4">
                   <div className="skeleton h-4 w-3/4 rounded" />
                   <div className="skeleton h-4 w-1/2 rounded" />
                 </div>

@@ -8,41 +8,41 @@ export default function ProductCard({ product }: { product: Product }) {
     : product.price;
 
   return (
-    <div className="flex gap-3 rounded-2xl bg-white p-3 shadow-sm ring-1 ring-black/5 sm:flex-col sm:gap-0 sm:p-4">
-      <div className="relative aspect-square w-24 shrink-0 overflow-hidden rounded-xl bg-milliy-cream sm:w-full">
+    <div className="group flex flex-col overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition-shadow duration-200 hover:shadow-md">
+      <div className="relative aspect-square w-full overflow-hidden bg-milliy-cream">
         {image ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={image}
             alt={product.name}
-            className="h-full w-full object-contain"
+            className="h-full w-full object-contain transition-transform duration-300 group-hover:scale-105"
             loading="lazy"
           />
         ) : (
           <div className="milliy-girih-bg h-full w-full" />
         )}
         {hasDiscount && (
-          <span className="absolute left-1.5 top-1.5 rounded-full bg-milliy-red px-2 py-0.5 text-xs font-semibold text-white">
+          <span className="absolute left-2 top-2 rounded-full bg-milliy-red px-2 py-0.5 text-xs font-semibold text-white shadow-sm">
             -{product.discount}%
           </span>
         )}
         {product.is_new && !hasDiscount && (
-          <span className="absolute left-1.5 top-1.5 rounded-full bg-milliy-turquoise-2 px-2 py-0.5 text-xs font-semibold text-white">
+          <span className="absolute left-2 top-2 rounded-full bg-milliy-turquoise-2 px-2 py-0.5 text-xs font-semibold text-white shadow-sm">
             Yangi
           </span>
         )}
       </div>
 
-      <div className="flex flex-1 flex-col justify-center sm:mt-3 sm:justify-start">
-        <h3 className="line-clamp-2 text-sm font-semibold text-milliy-text sm:text-base">
+      <div className="flex flex-1 flex-col p-2.5 sm:p-4">
+        <h3 className="line-clamp-2 text-sm font-semibold leading-snug text-milliy-text sm:text-base">
           {product.name}
         </h3>
         {product.description && (
-          <p className="mt-0.5 line-clamp-2 hidden text-xs text-gray-500 sm:block">
+          <p className="mt-1 line-clamp-2 hidden text-xs text-gray-500 sm:block">
             {product.description}
           </p>
         )}
-        <div className="mt-1.5 flex items-baseline gap-2 sm:mt-2">
+        <div className="mt-auto flex flex-wrap items-baseline gap-x-2 pt-2">
           <span className="text-sm font-bold text-milliy-blue sm:text-base">
             {formatPrice(finalPrice)}
           </span>

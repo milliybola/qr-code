@@ -57,3 +57,12 @@ body {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
