@@ -44,6 +44,12 @@ export interface Partner {
   working_hours?: string;
 }
 
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+function isValidUuid(uuid: string): boolean {
+  return UUID_RE.test(uuid);
+}
+
 function toHttps(url?: string): string | undefined {
   if (!url) return undefined;
   return url.startsWith("http://") ? url.replace("http://", "https://") : url;
@@ -57,6 +63,7 @@ function unwrap<T>(res: unknown): T {
 }
 
 export async function fetchPartner(uuid: string): Promise<Partner | null> {
+  if (!isValidUuid(uuid)) return null;
   try {
     const res = await fetch(`${API_BASE}/partner/${uuid}/`, {
       next: { revalidate: 60 },
@@ -72,6 +79,7 @@ export async function fetchPartner(uuid: string): Promise<Partner | null> {
 }
 
 export async function fetchCategories(uuid: string): Promise<Category[]> {
+  if (!isValidUuid(uuid)) return [];
   try {
     const res = await fetch(`${API_BASE}/partner/category/?partner=${uuid}`, {
       next: { revalidate: 60 },
