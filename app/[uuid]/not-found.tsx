@@ -1,22 +1,17 @@
 import Link from "next/link";
+import StatusScreen from "@/components/StatusScreen";
+import { IconPlate } from "@/components/Icons";
 
 export default function NotFound() {
   return (
-    <div className="milliy-girih-bg flex min-h-screen flex-col items-center justify-center bg-milliy-cream px-6 text-center">
-      <h1 className="font-script text-5xl text-milliy-blue">MilliyGo</h1>
-      <p className="mt-6 text-xl font-semibold text-milliy-text">
-        Bu restoran topilmadi
-      </p>
-      <p className="mt-2 max-w-sm text-milliy-text/70">
-        QR-kod noto&apos;g&apos;ri yoki restoran hozircha mavjud emas bo&apos;lishi
-        mumkin.
-      </p>
-      <Link
-        href="/"
-        className="mt-8 rounded-full bg-milliy-gold px-6 py-3 text-sm font-semibold text-white shadow transition hover:bg-milliy-gold-hover"
-      >
-        Bosh sahifaga qaytish
+    <StatusScreen
+      icon={<IconPlate size={36} />}
+      title="Restoran topilmadi"
+      text="QR-kod noto'g'ri yoki restoran MilliyGo'da hozircha faol emas. Ofitsiantdan yangi QR-kodni so'rang."
+    >
+      <Link href="/" className="rounded-card bg-ink py-3.5 text-[15px] font-extrabold text-white">
+        Bosh sahifa
       </Link>
-    </div>
+    </StatusScreen>
   );
 }

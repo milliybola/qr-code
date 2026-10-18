@@ -1,22 +1,23 @@
-import FooterAd from "@/components/FooterAd";
+import AppFooter from "@/components/AppFooter";
+import Wordmark from "@/components/Wordmark";
 
 export default function HomePage() {
   return (
-    <main className="flex min-h-screen flex-col bg-milliy-cream">
-      <div className="milliy-ikat-strip h-2 w-full" />
-
-      <section className="milliy-girih-bg flex flex-1 flex-col items-center justify-center px-6 py-20 text-center">
-        <h1 className="font-script text-6xl text-milliy-blue sm:text-7xl">MilliyGo</h1>
-        <p className="mt-4 max-w-md text-milliy-text/80">
-          Restoran va kafelarning QR-menyusini ko&apos;rish uchun stoldagi
-          QR-kodni telefoningiz kamerasi bilan skaner qiling.
+    <main className="flex min-h-[100svh] flex-col bg-white">
+      <div className="mx-auto flex h-14 w-full max-w-3xl items-center px-4">
+        <Wordmark size={19} />
+      </div>
+      <section className="mx-auto flex w-full max-w-3xl flex-1 flex-col justify-center px-4 py-10">
+        <div className="girih-bg h-40 w-full rounded-tile" aria-hidden />
+        <h1 className="h-display mt-6 text-[32px] leading-[1.1]">Restoran menyusi — telefoningizda</h1>
+        <p className="mt-3 max-w-md text-[15.5px] text-muted">
+          Menyuni ko&apos;rish uchun stoldagi QR-kodni telefoningiz kamerasi bilan skaner qiling.
         </p>
-        <div className="mt-8 inline-flex items-center gap-2 rounded-full border border-milliy-gold/40 bg-white px-5 py-2 text-sm text-milliy-text/70 shadow-sm">
-          📷 QR-kodni skaner qilib, menyuga o&apos;ting
+        <div className="mt-6 inline-flex w-fit items-center gap-2 rounded-full bg-green-soft px-4 py-2 text-[14px] font-bold text-green">
+          QR-kodni skaner qiling → menyu ochiladi
         </div>
       </section>
-
-      <FooterAd />
+      <AppFooter compact />
     </main>
   );
 }
