@@ -8,6 +8,11 @@ import SafeImage from "./SafeImage";
 import ApiGap from "./ApiGap";
 import { Badges, PriceRow } from "./ProductCard";
 import { IconBell, IconClose } from "./Icons";
+import { useCart } from "./CartProvider";
+import { Stepper } from "./CartSheet";
+
+/** Menyuda "tugagan" deb belgilangan mahsulotni savatga qo'shib bo'lmaydi */
+export const isUnavailable = (stock?: string) => !!stock && /tugagan|mavjud emas|yo'q|sold/i.test(stock);
 
 export type SheetItem = { kind: "product"; product: MenuProduct } | { kind: "set"; set: MenuSet };
 
@@ -50,9 +55,12 @@ export default function ProductSheet({ item, onClose }: { item: SheetItem | null
   const panelRef = useRef<HTMLDivElement>(null);
   const [imgIdx, setImgIdx] = useState(0);
   useScrollLock(!!item);
+  const cart = useCart();
+  const [qty, setQty] = useState(1);
 
   useEffect(() => {
     setImgIdx(0);
+    setQty(1);
     if (!item) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
     window.addEventListener("keydown", onKey);
@@ -68,6 +76,9 @@ export default function ProductSheet({ item, onClose }: { item: SheetItem | null
   const oldPrice = isSet ? item.set.oldPrice : item.product.oldPrice;
   const description = isSet ? item.set.description : item.product.description;
   const images = isSet ? (item.set.image ? [item.set.image] : []) : item.product.images;
+  const uuid = isSet ? item.set.uuid : item.product.uuid;
+  const unavailable = !isSet && isUnavailable(item.product.stockStatus);
+  const canOrder = cart.enabled && !!uuid && !unavailable;
 
   return (
     <div className="fixed inset-0 z-[60] flex items-end justify-center sm:items-center" role="dialog" aria-modal="true" aria-label={name}>
@@ -149,14 +160,30 @@ export default function ProductSheet({ item, onClose }: { item: SheetItem | null
               </div>
             )}
 
-            {/* Ko'rish rejimi — buyurtma API'si yo'q */}
-            <div className="mt-5 flex items-center gap-3 rounded-tile border border-line bg-chip/60 p-3.5">
-              <IconBell size={22} className="shrink-0 text-green" />
-              <p className="flex-1 text-[13.5px] font-semibold text-ink-2">
-                Buyurtma berish uchun ofitsiantga ayting
+            {canOrder ? (
+              <div className="mt-5 flex items-center gap-3">
+                <Stepper qty={qty} onChange={(n) => setQty(Math.max(1, Math.min(50, n)))} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    cart.add({ uuid: uuid!, name, price, image: images[0] }, qty);
+                    onClose();
+                  }}
+                  className="flex-1 rounded-full bg-green px-4 py-3.5 text-[15.5px] font-black text-white active:scale-[0.99]"
+                >
+                  Savatga · {formatPrice(price * qty)}
+                </button>
+              </div>
+            ) : cart.enabled ? (
+              <p className="mt-5 rounded-tile border border-line bg-chip/60 p-3.5 text-[13.5px] font-semibold text-ink-2">
+                {unavailable ? "Bu mahsulot hozir mavjud emas." : "Bu mahsulotni ofitsiant orqali buyurtma qiling."}
               </p>
-              <ApiGap title="Stoldan buyurtma / savat endpointi yo'q — API_GAPS.md #1" label="buyurtma" />
-            </div>
+            ) : (
+              <div className="mt-5 flex items-center gap-3 rounded-tile border border-line bg-chip/60 p-3.5">
+                <IconBell size={22} className="shrink-0 text-green" />
+                <p className="flex-1 text-[13.5px] font-semibold text-ink-2">Buyurtma berish uchun ofitsiantga ayting</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

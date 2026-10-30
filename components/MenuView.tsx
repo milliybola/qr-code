@@ -8,7 +8,10 @@ import ProductSheet, { useScrollLock, type SheetItem } from "./ProductSheet";
 import SafeImage from "./SafeImage";
 import ApiGap from "./ApiGap";
 import Wordmark from "./Wordmark";
-import { IconBell, IconClose, IconEye, IconSearch } from "./Icons";
+import { useTable } from "./TableProvider";
+import { useCart } from "./CartProvider";
+import { callSummary, isPending } from "@/lib/callText";
+import { IconBell, IconCart, IconClose, IconEye, IconReceipt, IconSearch } from "./Icons";
 
 const BAR_H = 56;
 const TABS_H = 52;
@@ -46,6 +49,8 @@ export default function MenuView({
   hero: React.ReactNode;
   footer: React.ReactNode;
 }) {
+  const table = useTable();
+  const cart = useCart();
   const sections = useMemo<Section[]>(
     () => [
       ...(sets.length > 0 ? [{ id: SETS_ID, name: "Setlar" }] : []),
@@ -249,24 +254,60 @@ export default function MenuView({
         <div className="pointer-events-auto mx-auto flex max-w-3xl items-center gap-3 rounded-tile border border-line bg-white p-2.5 pl-3.5 shadow-float">
           <IconEye size={20} className="hidden shrink-0 text-muted min-[400px]:block" />
           <div className="min-w-0 flex-1 leading-tight">
-            <p className="truncate text-[13.5px] font-extrabold text-ink">Faqat ko&apos;rish uchun</p>
-            <p className="truncate text-[12px] text-muted">Buyurtmani ofitsiantga ayting</p>
+            <p className="truncate text-[13.5px] font-extrabold text-ink">{table.status === "ok" ? table.name : "Faqat ko'rish uchun"}</p>
+            <p className={`truncate text-[12px] ${cart.enabled && (cart.callError || callSummary(cart.calls)) ? "font-bold text-green" : "text-muted"}`} aria-live="polite">
+              {cart.enabled ? cart.callError ?? callSummary(cart.calls) ?? "Telefondan buyurtma bering" : "Buyurtmani ofitsiantga ayting"}
+            </p>
           </div>
-          <span className="flex items-center gap-1.5">
-            <button
-              type="button"
-              disabled
-              aria-disabled="true"
-              title="Tez orada: ofitsiantni chaqirish"
-              aria-label="Ofitsiantni chaqirish (tez orada)"
-              className="flex items-center gap-1.5 rounded-full bg-green-soft px-3.5 py-2 text-[13px] font-extrabold text-green opacity-60"
-            >
-              <IconBell size={16} />
-              <span className="min-[420px]:hidden">Ofitsiant</span>
-              <span className="hidden min-[420px]:inline">Ofitsiantni chaqirish</span>
-            </button>
-            <ApiGap title="Ofitsiant chaqirish / stol buyurtmasi: POST /tables/<table>/call-waiter/ va stol identifikatori yo'q — API_GAPS.md #1, #2" />
-          </span>
+          {cart.enabled ? (
+            <span className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={() => void cart.sendCall("CALL")}
+                disabled={cart.callBusy || isPending(cart.calls, "CALL")}
+                aria-label="Ofitsiantni chaqirish"
+                className={`flex h-11 w-11 items-center justify-center rounded-full bg-green-soft text-green active:scale-95 disabled:opacity-60 ${isPending(cart.calls, "CALL") ? "animate-pulse" : ""}`}
+              >
+                <IconBell size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={() => cart.setOrdersOpen(true)}
+                aria-label="Buyurtmalar va hisob"
+                className="flex h-11 w-11 items-center justify-center rounded-full bg-chip text-ink active:scale-95"
+              >
+                <IconReceipt size={20} />
+              </button>
+              <button
+                type="button"
+                onClick={() => cart.setCartOpen(true)}
+                className="flex items-center gap-2 rounded-full bg-green px-4 py-2.5 text-[14px] font-black text-white active:scale-95"
+              >
+                <IconCart size={18} />
+                {cart.count > 0 ? (
+                  <span className="tabular-nums">{cart.count} · {formatPrice(cart.estimate)}</span>
+                ) : (
+                  <span>Savat</span>
+                )}
+              </button>
+            </span>
+          ) : (
+            <span className="flex items-center gap-1.5">
+              <button
+                type="button"
+                disabled
+                aria-disabled="true"
+                title="Tez orada: ofitsiantni chaqirish"
+                aria-label="Ofitsiantni chaqirish (tez orada)"
+                className="flex items-center gap-1.5 rounded-full bg-green-soft px-3.5 py-2 text-[13px] font-extrabold text-green opacity-60"
+              >
+                <IconBell size={16} />
+                <span className="min-[420px]:hidden">Ofitsiant</span>
+                <span className="hidden min-[420px]:inline">Ofitsiantni chaqirish</span>
+              </button>
+              <ApiGap title="Ofitsiant chaqirish / stol buyurtmasi: POST /tables/<table>/call-waiter/ va stol identifikatori yo'q — API_GAPS.md #1, #2" />
+            </span>
+          )}
         </div>
       </div>
 

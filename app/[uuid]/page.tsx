@@ -13,6 +13,11 @@ import {
 import RestaurantHero from "@/components/RestaurantHero";
 import MenuView from "@/components/MenuView";
 import AppFooter from "@/components/AppFooter";
+import TableProvider from "@/components/TableProvider";
+import TableBanner from "@/components/TableBanner";
+import CartProvider from "@/components/CartProvider";
+import CartSheet from "@/components/CartSheet";
+import OrdersSheet from "@/components/OrdersSheet";
 import { MenuBodySkeleton, TopBarSkeleton } from "@/components/Skeletons";
 import { IconPlate } from "@/components/Icons";
 
@@ -97,7 +102,10 @@ export default async function RestaurantMenuPage({ params }: PageProps) {
   if (!partner) notFound();
 
   return (
+    <TableProvider partnerUuid={partner.uuid}>
+    <CartProvider>
     <div className="min-h-screen bg-white">
+      <TableBanner />
       <Suspense
         fallback={
           <>
@@ -110,5 +118,9 @@ export default async function RestaurantMenuPage({ params }: PageProps) {
         <MenuSection partner={partner} data={data} />
       </Suspense>
     </div>
+    <CartSheet />
+    <OrdersSheet />
+    </CartProvider>
+    </TableProvider>
   );
 }

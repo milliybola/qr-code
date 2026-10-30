@@ -3,6 +3,9 @@
 import type { MenuProduct, MenuSet } from "@/lib/api";
 import { formatPrice, formatSum } from "@/lib/format";
 import SafeImage from "./SafeImage";
+import { useCart } from "./CartProvider";
+import { IconPlus } from "./Icons";
+import { isUnavailable } from "./ProductSheet";
 
 export function PriceRow({ price, oldPrice, size = "md" }: { price: number; oldPrice?: number; size?: "md" | "lg" }) {
   const sale = oldPrice !== undefined && oldPrice > price;
@@ -43,7 +46,11 @@ export function Badges({ product }: { product: Pick<MenuProduct, "discountPercen
 }
 
 export function ProductCard({ product, onOpen, eager }: { product: MenuProduct; onOpen: () => void; eager?: boolean }) {
+  const cart = useCart();
+  const canAdd = cart.enabled && !!product.uuid && !isUnavailable(product.stockStatus);
+  const inCart = product.uuid ? cart.qtyOf(product.uuid) : 0;
   return (
+    <div className="relative">
     <button
       type="button"
       onClick={onOpen}
@@ -70,6 +77,18 @@ export function ProductCard({ product, onOpen, eager }: { product: MenuProduct; 
       </div>
       <h3 className="mt-0.5 line-clamp-2 text-[14px] leading-[1.25] text-ink-2">{product.name}</h3>
     </button>
+    {canAdd && (
+      <button
+        type="button"
+        aria-label={`${product.name} — savatga qo'shish`}
+        onClick={() => cart.add({ uuid: product.uuid!, name: product.name, price: product.price, image: product.image })}
+        className="absolute right-2 top-2 flex h-10 min-w-10 items-center justify-center gap-1 rounded-full bg-green px-2.5 text-[14px] font-black text-white shadow-float active:scale-95"
+      >
+        {inCart > 0 && <span className="tabular-nums">{inCart}</span>}
+        <IconPlus size={18} />
+      </button>
+    )}
+    </div>
   );
 }
 

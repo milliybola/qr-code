@@ -95,3 +95,30 @@ export const MilliyStar = ({ size = 16, className }: P) => (
     <rect x="5.6" y="5.6" width="12.8" height="12.8" transform="rotate(45 12 12)" />
   </svg>
 );
+
+export const IconPlus = ({ size = 24, className }: P) => (
+  <svg {...base(size, className)}>
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+export const IconMinus = ({ size = 24, className }: P) => (
+  <svg {...base(size, className)}>
+    <path d="M5 12h14" />
+  </svg>
+);
+
+export const IconCart = ({ size = 24, className }: P) => (
+  <svg {...base(size, className)}>
+    <path d="M3 4h2l2.2 10.2a1 1 0 0 0 1 .8h8.6a1 1 0 0 0 1-.76L19.5 8H6.2" />
+    <circle cx="9" cy="19" r="1.4" />
+    <circle cx="17" cy="19" r="1.4" />
+  </svg>
+);
+
+export const IconReceipt = ({ size = 24, className }: P) => (
+  <svg {...base(size, className)}>
+    <path d="M6 3h12v18l-3-2-3 2-3-2-3 2z" />
+    <path d="M9 8h6M9 12h6" />
+  </svg>
+);
